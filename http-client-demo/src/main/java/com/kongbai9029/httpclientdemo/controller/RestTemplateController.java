@@ -1,7 +1,7 @@
 package com.kongbai9029.httpclientdemo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.kongbai9029.httpclientdemo.model.User;
-import org.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
