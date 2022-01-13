@@ -1,6 +1,7 @@
 package com.kongbai9029.httpclientdemo.controller;
 
 import com.kongbai9029.httpclientdemo.model.User;
+import org.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -57,21 +58,6 @@ public class RestTemplateController {
         return restTemplate.getForObject(url, User.class, params);
     }
 
-    /**
-     * 以get方式请求第三方http接口，并传入header
-     * @return
-     */
-    @GetMapping("/v4/info")
-    public User infoV4() {
-        String url = "http://localhost:8081/user/v1/info";
-        HttpHeaders resultRequestHeader = new HttpHeaders();
-        resultRequestHeader.add("charset", "UTF-8");
-        resultRequestHeader.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> resultHttpEntity = new HttpEntity<>(null, resultRequestHeader);
-        ResponseEntity<User> exchange = restTemplate.exchange(url, HttpMethod.GET,resultHttpEntity,User.class);
-        return exchange.getBody();
-    }
-
 
 
     /**
@@ -121,5 +107,42 @@ public class RestTemplateController {
         String url = "http://localhost:8081/user/v2/info";
         User user = User.builder().name("小李").build();
         return  restTemplate.postForObject(url, user, User.class);
+    }
+
+
+
+    /**
+     * 以get方式请求第三方http接口，并传入header
+     * @return
+     */
+    @GetMapping("/v4/info")
+    public User infoV4() {
+        String url = "http://localhost:8081/user/v1/info";
+        HttpHeaders resultRequestHeader = new HttpHeaders();
+        resultRequestHeader.add("charset", "UTF-8");
+        resultRequestHeader.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> resultHttpEntity = new HttpEntity<>(null, resultRequestHeader);
+        ResponseEntity<User> exchange = restTemplate.exchange(url, HttpMethod.GET,resultHttpEntity,User.class);
+        return exchange.getBody();
+    }
+
+    /**
+     * 以get方式请求第三方http接口，并传入header
+     * @return
+     */
+    @GetMapping("/v9/info")
+    public User infoV9() {
+        String url = "http://localhost:8081/user/v1/info";
+        HttpHeaders resultRequestHeader = new HttpHeaders();
+        resultRequestHeader.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject jsonObj = new JSONObject();
+        jsonObj.put("start",1);
+        jsonObj.put("page",5);
+
+        HttpEntity<String> entity = new HttpEntity<>(jsonObj.toString(), resultRequestHeader);
+
+        ResponseEntity<User> exchange = restTemplate.exchange(url, HttpMethod.GET,entity,User.class);
+        return exchange.getBody();
     }
 }
