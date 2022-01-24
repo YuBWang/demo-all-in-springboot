@@ -1,6 +1,7 @@
 package com.kongbai9029.customannotation.controller;
 
 import com.kongbai9029.customannotation.anno.LoginRequired;
+import com.kongbai9029.customannotation.anno.MyLog;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,5 +19,10 @@ public class LoginController {
         return "into login source";
     }
 
+    @MyLog
+    @GetMapping("info")
+    public String info() {
+        return "into login source";
+    }
 
 }

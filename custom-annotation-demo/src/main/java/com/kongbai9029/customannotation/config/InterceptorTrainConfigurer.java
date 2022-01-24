@@ -1,6 +1,6 @@
 package com.kongbai9029.customannotation.config;
 
-import com.kongbai9029.customannotation.aspect.LoginAspect;
+import com.kongbai9029.customannotation.interceptor.LoginInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,10 +14,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorTrainConfigurer implements WebMvcConfigurer {
 
     @Autowired
-    private LoginAspect loginAspect;
+    private LoginInterceptor loginInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginAspect).addPathPatterns("/**");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/**");
     }
 }

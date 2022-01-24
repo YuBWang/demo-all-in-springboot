@@ -1,4 +1,4 @@
-package com.kongbai9029.customannotation.aspect;
+package com.kongbai9029.customannotation.interceptor;
 
 import com.kongbai9029.customannotation.anno.LoginRequired;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Date: 2022/1/24 18:05
  */
 @Component
-public class LoginAspect implements HandlerInterceptor {
+public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("进入拦截器");
