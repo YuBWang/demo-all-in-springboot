@@ -25,6 +25,8 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <!--    子模块pom不会自动继承父模块pom中的jar包，如果需要使用，就要给出 groupId 和 artifactId，无需给出 version-->
+    <!--    此种方式由父模块统一管理依赖的版本配置-->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -56,6 +58,7 @@
         </dependencies>
     </dependencyManagement>
 
+    <!--     子模块会直接继承父模块中的jar包 此种方式一般用于：在父pom中配置每个模块都需要的jar包及其他配置信息-->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
