@@ -18,6 +18,7 @@
 
     <modules>
         <module>http-client-demo</module>
+        <module>custom-annotation-demo</module>
     </modules>
 
     <properties>
