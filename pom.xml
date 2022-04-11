@@ -19,6 +19,7 @@
     <modules>
         <module>http-client-demo</module>
         <module>custom-annotation-demo</module>
+        <module>thread-demo</module>
     </modules>
 
     <properties>
