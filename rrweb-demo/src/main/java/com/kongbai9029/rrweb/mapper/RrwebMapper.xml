@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kongbai9029.rrweb.mapper.RrwebMapper">
+
+    <select id = "getEvent" resultType="String">
+        select event from rrwebevent where eventicode='N9XYG0000000000000080' order by eventicode asc
+    </select>
+
+    <select id = "getEventList" resultType="com.kongbai9029.rrweb.dto.RrwebEvent">
+        select eventicode,event,modifier,to_char(modifydate,'yyyy/mm/dd hh:mm:ss') as modifydate from rrwebevent order by eventicode asc
+    </select>
+
+    <select id = "getEventById" resultType="String" parameterType="String">
+        select event from rrwebevent where eventicode=#{id}
+    </select>
+
+</mapper>
