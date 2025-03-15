@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <base th:href="@{/}">
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+<!--    <link rel="stylesheet" href="../../static/css/index.css" th:href="@{/css/index.css}"/>-->
+<!--    <script src="../../static/js/index.js" th:src="@{/js/index.js}" type="text/javascript"></script>-->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb-all.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/style.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>
+    <script src="../static/js/jquery.js" th:src="@{/js/jquery.js}" type="text/javascript"></script>
+    <script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}" type="text/javascript"></script>
+    <script src="../static/js/replay.js" th:src="@{/js/replay.js}" type="text/javascript"></script>
+</head>
+<body>
+<button type="button" onclick="playback()">播放</button>
+<div id="playback" style="height: 50%;width: 50%;background-color: #cccccc"></div>
+
+</body>
+</html>

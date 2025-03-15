@@ -1,0 +1,27 @@
+
+
+
+spring:
+  application:
+    name: rrweb
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@10.91.18.63:1521:sndevdb
+    username: sn_busi
+    password: sn_busidev2022
+  thymeleaf:
+    prefix: classpath:/templates
+    suffix: .html
+    cache: false
+
+
+server:
+  port: 8099
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.zhg.demo.mybatis.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+
