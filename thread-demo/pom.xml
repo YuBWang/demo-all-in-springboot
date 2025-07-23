@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
+        <javafx.version>17.0.7</javafx.version>
     </properties>
 
     <dependencies>
@@ -42,6 +43,63 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.8.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jxbrowser</groupId>
+            <artifactId>jxbrowser</artifactId>
+            <version>7.22</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/jxbrowser-7.22.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jxbrowser</groupId>
+            <artifactId>javafx</artifactId>
+            <version>7.22</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/jxbrowser-javafx-7.22.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jxbrowser</groupId>
+            <artifactId>win64</artifactId>
+            <version>7.22</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/jxbrowser-win64-7.22.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>17.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <!-- 使用以下任一兼容版本 -->
+            <version>1.18.30</version>  <!-- 最新稳定版 -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- 添加平台特定依赖（必需） -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
 
     </dependencies>
@@ -76,6 +134,7 @@
                 <version>2.3.7.RELEASE</version>
                 <configuration>
                     <mainClass>com.kongbai9029.threaddemo.ThreadDemoApplication</mainClass>
+                    <includeSystemScope>true</includeSystemScope>
                 </configuration>
                 <executions>
                     <execution>
