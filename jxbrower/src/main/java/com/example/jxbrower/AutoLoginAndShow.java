@@ -7,11 +7,14 @@ import com.teamdev.jxbrowser.engine.RenderingMode;
 import com.teamdev.jxbrowser.frame.Frame;
 import com.teamdev.jxbrowser.navigation.Navigation;
 import com.teamdev.jxbrowser.navigation.event.FrameLoadFinished;
+import com.teamdev.jxbrowser.net.event.ResponseBytesReceived;
 import com.teamdev.jxbrowser.view.javafx.BrowserView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+
+import java.nio.charset.StandardCharsets;
 
 public class AutoLoginAndShow extends Application {
     private Engine engine;
@@ -66,6 +69,12 @@ public class AutoLoginAndShow extends Application {
                 );
             }
 
+        });
+
+        // 监听请求
+        browser.profile().network().on(ResponseBytesReceived.class, event -> {
+            byte[] data = event.data();
+            System.out.println("========" + event.urlRequest().url());
         });
 
         // 打开登录页面
