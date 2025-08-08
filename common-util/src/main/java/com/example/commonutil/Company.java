@@ -113,4 +113,8 @@ public class Company implements Serializable {
     private String notes;
     private String created;
     private String modified;
+
+    private void print(String test) {
+        System.out.println("调用了私有的方法 name:" + name + test);
+    }
 }
