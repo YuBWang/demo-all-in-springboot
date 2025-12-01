@@ -15,6 +15,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.nio.charset.StandardCharsets;
+// 使用JavaFX需要添加VM参数
+// --module-path
+//"D:\tools\bcrj\javaFX\javafx-sdk-17.0.16\lib"
+//--add-modules
+//javafx.controls,javafx.fxml,javafx.graphics,javafx.web
 
 public class AutoLoginAndShow extends Application {
     private Engine engine;
