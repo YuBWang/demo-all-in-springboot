@@ -58,9 +58,9 @@ public class TestMapService {
             
             // 验证数值增加结果
             Integer newAge = (Integer) redisMapUtil.get(key, "age");
-            Double newScore = (Double) redisMapUtil.get(key, "score");
-            System.out.println("增加后的年龄: " + newAge);
-            System.out.println("增加后的分数: " + newScore);
+//            Double newScore = (Double) redisMapUtil.get(key, "score");
+//            System.out.println("增加后的年龄: " + newAge);
+//            System.out.println("增加后的分数: " + newScore);
 //
 //            // 测试删除字段
 //            long deleteCount = redisMapUtil.deleteFields(key, "email");
