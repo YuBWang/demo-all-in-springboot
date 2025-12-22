@@ -8,4 +8,6 @@ import com.kongbai9029.httpclientdemo.model.User;
  */
 public interface UserService {
     User getUser();
+
+    User getUser(String name);
 }
