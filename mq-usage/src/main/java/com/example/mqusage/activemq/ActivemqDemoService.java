@@ -27,18 +27,10 @@ public class ActivemqDemoService {
             data1.put("name", "张三");
             data1.put("age", 25);
             data1.put("email", "zhangsan@example.com");
-            
-            Map<String, Object> data2 = new HashMap<>();
-            data2.put("id", 2);
-            data2.put("name", "李四");
-            data2.put("age", 30);
-            data2.put("email", "lisi@example.com");
-            
-            jmsTemplate.convertAndSend("test.queue", data1);
+
+            // 设置消息类型为文本类型，并转换为JSON字符串发送
+            jmsTemplate.convertAndSend("test.queue", toJsonString(data1));
             System.out.println("发送JSON消息: " + data1);
-            
-            jmsTemplate.convertAndSend("test.queue", data2);
-            System.out.println("发送JSON消息: " + data2);
             
             System.out.println("示例消息发送完成");
         } catch (Exception e) {
@@ -50,10 +42,35 @@ public class ActivemqDemoService {
         Queue queue = new ActiveMQQueue("test.queue");
         jmsTemplate.setDefaultDestination(queue);
         try {
-            jmsTemplate.convertAndSend("test.queue", data);
+            // 设置消息类型为文本类型，并转换为JSON字符串发送
+            if (data instanceof Map) {
+                jmsTemplate.convertAndSend("test.queue", toJsonString((Map<String, Object>) data));
+            } else {
+                jmsTemplate.convertAndSend("test.queue", data.toString());
+            }
             System.out.println("发送JSON消息: " + data);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private String toJsonString(Map<String, Object> data) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        boolean first = true;
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            if (!first) {
+                sb.append(",");
+            }
+            sb.append("\"").append(entry.getKey()).append("\":");
+            if (entry.getValue() instanceof String) {
+                sb.append("\"").append(entry.getValue()).append("\"");
+            } else {
+                sb.append(entry.getValue());
+            }
+            first = false;
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }
