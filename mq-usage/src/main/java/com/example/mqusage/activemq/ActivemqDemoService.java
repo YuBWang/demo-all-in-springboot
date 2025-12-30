@@ -73,4 +73,27 @@ public class ActivemqDemoService {
         sb.append("}");
         return sb.toString();
     }
+
+    public void sendGroupMessages(String companyid,String ccode) {
+        try {
+            System.out.println("开始发送分组消息示例消息...");
+            String groupid = companyid+"_"+ccode;
+
+            // 发送示例数据
+            Map<String, Object> data1 = new HashMap<>();
+            data1.put("id", 1);
+            data1.put("name", "张三");
+            data1.put("age", 25);
+            data1.put("email", "zhangsan@example.com");
+
+            // 设置消息类型为文本类型，并转换为JSON字符串发送
+            jmsTemplate.convertAndSend("test.group.queue", toJsonString(data1),message -> {
+                message.setStringProperty("JMSXGroupID", groupid);
+                return message;
+            });
+            System.out.println("发送JSON消息: " + data1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

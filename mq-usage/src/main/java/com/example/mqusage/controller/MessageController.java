@@ -1,9 +1,9 @@
 package com.example.mqusage.controller;
 
 import com.example.mqusage.activemq.ActivemqDemoService;
+import com.example.mqusage.dto.params.CompanyRequestparams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +37,17 @@ public class MessageController {
             
             activemqDemoService.sendCustomMessage(customData);
             return "自定义消息已发送";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "发送失败: " + e.getMessage();
+        }
+    }
+
+    @PostMapping("/sendgroupSample")
+    public String sendgroupSample(@RequestBody CompanyRequestparams companyRequestparams) {
+        try {
+            activemqDemoService.sendGroupMessages(companyRequestparams.getCompanyid(), companyRequestparams.getCcode());
+            return "示例消息已发送";
         } catch (Exception e) {
             e.printStackTrace();
             return "发送失败: " + e.getMessage();
