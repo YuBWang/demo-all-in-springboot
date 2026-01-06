@@ -26,4 +26,11 @@ public class QueueConsumerServiceImpl implements QueueConsumerService {
 
 
     }
+
+    @Override
+    public void deleteEmptyQueue() {
+        QueueManager queueManager = new QueueManager(redisTemplate);
+        queueManager.removeInvalidQueueName();
+
+    }
 }

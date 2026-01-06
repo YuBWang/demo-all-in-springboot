@@ -6,12 +6,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.queue.util.QueueUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
-import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.StringUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -447,14 +446,72 @@ public class QueueManager {
      * @return {@link Set }<{@link String }>
      */
     public Set<String> getAllQueueName() {
-        Set<String> set = new HashSet<>();
-        Set<Object> queues = opsForSet.members(QUEUES);
-        if (!CollectionUtils.isEmpty(queues)) {
-            for (Object s : queues) {
-                set.add(String.valueOf(s));
+        return getQueueNamesByPrefix(null);
+    }
+
+    /**
+     * 删除无效队列名称（用于定时任务等定期清理）
+     */
+    public void removeInvalidQueueName() {
+        Set<String> queueNames = getAllQueueName();
+        List<String> removeList = new ArrayList<>();
+        for (String name : queueNames) {
+            QueueStats stats = getQueueStats(name);
+            if (stats.getTotalCount() == 0) {
+                removeList.add(name);
             }
+
         }
-        return set;
+        batchDeleteMembers(QUEUES, removeList);
+    }
+
+    /**
+     * 批处理删除成员(使用管道操作，避免大批量命令阻塞)
+     *
+     * @param key     说明
+     * @param members 成员
+     */
+    public void batchDeleteMembers(final String key, final List<String> members) {
+
+        if (members == null || members.isEmpty()) {
+            return;
+        }
+        //  获取Redis序列化器
+        final RedisSerializer keySerializer = redisTemplate.getKeySerializer();
+        final RedisSerializer valueSerializer = redisTemplate.getValueSerializer();
+
+        // 使用Redis管道执行批处理操作
+        List<Object> results = redisTemplate.executePipelined(
+                new RedisCallback<Object>() {
+                    @Override
+                    public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                        byte[] keyBytes = keySerializer.serialize(key);
+
+                        //分批处理
+                        int batchSize = 1000;
+                        List<byte[]> batch = new ArrayList<>(batchSize);
+
+                        for (String member : members) {
+                            // 将成员序列化并添加到当前批次
+                            batch.add(valueSerializer.serialize(member));
+
+                            if (batch.size() >= batchSize) {
+                                connection.sRem(keyBytes,
+                                        batch.toArray(new byte[batch.size()][]));
+                                batch.clear();
+                            }
+                        }
+
+                        //处理最后一批
+                        if (!batch.isEmpty()) {
+                            connection.sRem(keyBytes,
+                                    batch.toArray(new byte[batch.size()][]));
+                        }
+
+                        return null;
+                    }
+                }
+        );
     }
 
     /**
@@ -617,23 +674,54 @@ public class QueueManager {
     }
 
     /**
-     * 获取队列名称中前缀为xx的值（因为序列号问题，无法使用scan命令）
+     * 获取队列名称中前缀为xx的值
      */
     public Set<String> getQueueNamesByPrefix(String prefix) {
-        Set<Object> allMembers = opsForSet.members(QUEUES);
-        Set<String> result = new HashSet<>();
+        return getQueueNameByCursor(QUEUES, prefix);
+    }
 
-        if (!CollectionUtils.isEmpty(allMembers)) {
-            for (Object member : allMembers) {
-                String string = String.valueOf(member);
-                if (string.startsWith(prefix)) {
-                    result.add(string);
+    /**
+     * 使用游标扫描（避免set太大时，直接获取成员导致redis宕机）
+     */
+    public Set<String> getQueueNameByCursor(String key, String prefix) {
+        Set<String> result = new HashSet<>();
+        // 初始化游标，用于遍历Redis集合
+        Cursor<Object> cursor = null;
+        try {
+            final boolean filterPrefix = StringUtils.hasText(prefix);
+            if (filterPrefix) {
+                // 有前缀：设置扫描模式为"*前缀*"（模糊匹配），每次扫描100个元素
+                cursor = opsForSet.scan(key, ScanOptions.scanOptions().match("*" + prefix + "*").count(100).build());
+            } else {
+                cursor = opsForSet.scan(key, ScanOptions.scanOptions().count(100).build());
+            }
+            while (cursor.hasNext()) {
+                Object member = cursor.next();
+                String keyName = String.valueOf(member);
+                //  关键逻辑：由于Redis的SCAN命令使用通配符模式匹配，
+                //    "*前缀*"可能会匹配到包含但不以前缀开头的元素，
+                //    所以这里再次使用startsWith进行精确的前缀验证
+                if (StringUtils.hasText(keyName)) {
+                    //因为序列化问题，scan匹配模式前缀多加了*，这里再进行前缀判断
+                    if (filterPrefix && keyName.startsWith(prefix)) {
+                        result.add(keyName);
+                    } else {
+                        result.add(keyName);
+                    }
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Exception e) {
+
                 }
             }
         }
+
         return result;
     }
-
     /**
      * 获取数量
      */

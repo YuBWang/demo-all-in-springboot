@@ -25,4 +25,9 @@ public class QueueConsumerController {
         queueConsumerService.consumer();
         return "success";
     }
+
+    @GetMapping("deleteEmpty")
+    public void deleteempty() {
+        queueConsumerService.deleteEmptyQueue();
+    }
 }
