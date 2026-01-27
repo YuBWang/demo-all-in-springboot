@@ -1,6 +1,7 @@
 package com.kongbai9029.httpclientdemo.config;
 
 import com.kongbai9029.httpclientdemo.intercept.restIntercept;
+import com.kongbai9029.httpclientdemo.util.RestTemplateUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -23,6 +24,10 @@ public class RestTemplateConfig {
         interceptors.add(new restIntercept());
         restTemplate.setInterceptors(interceptors);
         return restTemplate;
+    }
 
+    @Bean
+    public RestTemplateUtil restTemplateUtil(RestTemplate restTemplate) {
+        return new RestTemplateUtil(restTemplate);
     }
 }
